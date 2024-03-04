@@ -11,6 +11,7 @@ import (
 type OrderServices interface {
 	AddCart(ctx context.Context, req models.CartParams) error
 	GetCartProducts(ctx context.Context, req models.CartsParams) (models.CartProducts, error)
+	DeleteCartProduct(ctx context.Context, req models.CartProductParams) error
 }
 
 type orderService struct {
@@ -37,4 +38,9 @@ func (service *orderService) AddCart(ctx context.Context, req models.CartParams)
 // GetCartProducts implements OrderServices.
 func (service *orderService) GetCartProducts(ctx context.Context, req models.CartsParams) (models.CartProducts, error) {
 	return service.repo.GetCartProducts(ctx, req)
+}
+
+// DeleteCartProduct implements OrderServices.
+func (service *orderService) DeleteCartProduct(ctx context.Context, req models.CartProductParams) error {
+	return service.repo.DeleteCartProduct(ctx, req)
 }

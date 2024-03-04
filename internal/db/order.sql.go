@@ -91,11 +91,16 @@ func (q *Queries) DeleteOrder(ctx context.Context) error {
 
 const deleteOrderItemByProduct = `-- name: DeleteOrderItemByProduct :exec
 DELETE FROM order_items
-WHERE pid = $1
+WHERE oid = $1 AND pid = $2
 `
 
-func (q *Queries) DeleteOrderItemByProduct(ctx context.Context, pid string) error {
-	_, err := q.db.Exec(ctx, deleteOrderItemByProduct, pid)
+type DeleteOrderItemByProductParams struct {
+	Oid string `json:"oid"`
+	Pid string `json:"pid"`
+}
+
+func (q *Queries) DeleteOrderItemByProduct(ctx context.Context, arg DeleteOrderItemByProductParams) error {
+	_, err := q.db.Exec(ctx, deleteOrderItemByProduct, arg.Oid, arg.Pid)
 	return err
 }
 
@@ -159,6 +164,40 @@ func (q *Queries) GetCart(ctx context.Context, arg GetCartParams) ([]GetCartRow,
 		return nil, err
 	}
 	return items, nil
+}
+
+const getCartProductDetail = `-- name: GetCartProductDetail :one
+SELECT 
+    oid,
+    pid,
+    quantity,
+    amount 
+FROM order_items 
+WHERE oid = $1 AND pid = $2
+`
+
+type GetCartProductDetailParams struct {
+	Oid string `json:"oid"`
+	Pid string `json:"pid"`
+}
+
+type GetCartProductDetailRow struct {
+	Oid      string `json:"oid"`
+	Pid      string `json:"pid"`
+	Quantity int32  `json:"quantity"`
+	Amount   int32  `json:"amount"`
+}
+
+func (q *Queries) GetCartProductDetail(ctx context.Context, arg GetCartProductDetailParams) (GetCartProductDetailRow, error) {
+	row := q.db.QueryRow(ctx, getCartProductDetail, arg.Oid, arg.Pid)
+	var i GetCartProductDetailRow
+	err := row.Scan(
+		&i.Oid,
+		&i.Pid,
+		&i.Quantity,
+		&i.Amount,
+	)
+	return i, err
 }
 
 const getCartProducts = `-- name: GetCartProducts :many
@@ -231,8 +270,14 @@ const getOrderDetails = `-- name: GetOrderDetails :one
 SELECT 
     oid, uid, total_amount, ordered_at
 FROM orders
-WHERE oid = $1
+WHERE oid = $1 AND uid = $2
+LIMIT 1
 `
+
+type GetOrderDetailsParams struct {
+	Oid string `json:"oid"`
+	Uid string `json:"uid"`
+}
 
 type GetOrderDetailsRow struct {
 	Oid         string           `json:"oid"`
@@ -241,8 +286,8 @@ type GetOrderDetailsRow struct {
 	OrderedAt   pgtype.Timestamp `json:"ordered_at"`
 }
 
-func (q *Queries) GetOrderDetails(ctx context.Context, oid string) (GetOrderDetailsRow, error) {
-	row := q.db.QueryRow(ctx, getOrderDetails, oid)
+func (q *Queries) GetOrderDetails(ctx context.Context, arg GetOrderDetailsParams) (GetOrderDetailsRow, error) {
+	row := q.db.QueryRow(ctx, getOrderDetails, arg.Oid, arg.Uid)
 	var i GetOrderDetailsRow
 	err := row.Scan(
 		&i.Oid,
@@ -324,5 +369,30 @@ type UpdateCartParams struct {
 
 func (q *Queries) UpdateCart(ctx context.Context, arg UpdateCartParams) error {
 	_, err := q.db.Exec(ctx, updateCart, arg.TotalAmount, arg.Oid)
+	return err
+}
+
+const updateCartProductDetail = `-- name: UpdateCartProductDetail :exec
+UPDATE order_items
+SET
+    quantity = $1,
+    amount = $2
+WHERE oid = $3 AND pid = $4
+`
+
+type UpdateCartProductDetailParams struct {
+	Quantity int32  `json:"quantity"`
+	Amount   int32  `json:"amount"`
+	Oid      string `json:"oid"`
+	Pid      string `json:"pid"`
+}
+
+func (q *Queries) UpdateCartProductDetail(ctx context.Context, arg UpdateCartProductDetailParams) error {
+	_, err := q.db.Exec(ctx, updateCartProductDetail,
+		arg.Quantity,
+		arg.Amount,
+		arg.Oid,
+		arg.Pid,
+	)
 	return err
 }

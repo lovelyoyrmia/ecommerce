@@ -10,6 +10,7 @@ type CartParams struct {
 type CartProductParams struct {
 	Oid string
 	Uid string
+	Pid string
 }
 
 type CartsParams struct {

@@ -39,11 +39,28 @@ SELECT
 FROM order_items
 WHERE oid = $1;
 
+-- name: GetCartProductDetail :one
+SELECT 
+    oid,
+    pid,
+    quantity,
+    amount 
+FROM order_items 
+WHERE oid = $1 AND pid = $2;
+
+-- name: UpdateCartProductDetail :exec
+UPDATE order_items
+SET
+    quantity = $1,
+    amount = $2
+WHERE oid = $3 AND pid = $4;
+
 -- name: GetOrderDetails :one
 SELECT 
     oid, uid, total_amount, ordered_at
 FROM orders
-WHERE oid = $1;
+WHERE oid = $1 AND uid = $2
+LIMIT 1;
 
 -- name: DeleteOrderItems :exec
 DELETE FROM order_items 
@@ -70,7 +87,7 @@ WHERE oid = $2;
 
 -- name: DeleteOrderItemByProduct :exec
 DELETE FROM order_items
-WHERE pid = $1;
+WHERE oid = $1 AND pid = $2;
 
 -- name: DeleteOrder :exec
 DELETE FROM orders as O

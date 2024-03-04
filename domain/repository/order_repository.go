@@ -10,6 +10,7 @@ import (
 type OrderRepositories interface {
 	AddCart(ctx context.Context, createCartParams db.CreateCartTx) error
 	GetCartProducts(ctx context.Context, req models.CartsParams) (models.CartProducts, error)
+	DeleteCartProduct(ctx context.Context, req models.CartProductParams) error
 }
 
 type orderRepo struct {
@@ -62,4 +63,25 @@ func (repo *orderRepo) GetCartProducts(ctx context.Context, req models.CartsPara
 		Oid:      order.Oid,
 		Products: products,
 	}, nil
+}
+
+// DeleteCartProduct implements OrderRepositories.
+func (repo *orderRepo) DeleteCartProduct(ctx context.Context, req models.CartProductParams) error {
+	order, err := repo.store.GetOrderDetails(ctx, db.GetOrderDetailsParams{
+		Oid: req.Oid,
+		Uid: req.Uid,
+	})
+	if err != nil {
+		return err
+	}
+
+	product, err := repo.store.GetProductDetails(ctx, req.Pid)
+	if err != nil {
+		return err
+	}
+
+	return repo.store.DeleteOrderItemByProduct(ctx, db.DeleteOrderItemByProductParams{
+		Oid: order.Oid,
+		Pid: product.Pid,
+	})
 }
