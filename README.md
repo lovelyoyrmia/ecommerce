@@ -139,6 +139,10 @@ OR
 ```
 go mod download
 ```
+- Run Seeder to generate dump products
+```
+make seed
+```
 - Run Server
 ```
 make server
