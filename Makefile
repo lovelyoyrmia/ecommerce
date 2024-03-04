@@ -16,16 +16,16 @@ createdb:
 dropdb:
 	docker exec -it postgres12 dropdb ecommerce
 
-migrate_up:
+migrateup:
 	migrate -path migrations -database "$(DB_URL)" --verbose up
 
-create_migrate:
+createmigrate:
 	migrate create -ext sql -dir migrations -seq init_schema
 
-migrate_down:
+migratedown:
 	migrate -path migrations -database "$(DB_URL)" --verbose down
 
-new_migration:
+newmigration:
 	migrate create -ext sql -dir migrations -seq $(name)
 
 sqlc:
@@ -39,3 +39,9 @@ proto:
 	--grpc-gateway_out=domain/pb --grpc-gateway_opt=paths=source_relative \
 	--openapiv2_out=docs/swagger --openapiv2_opt=allow_merge=true,merge_file_name=foedie \
     domain/proto/*.proto
+
+dbdocs:
+	dbdocs build docs/db.dbml
+
+dbschema:
+	dbml2sql --postgres -o internal/schema/schema.sql docs/db.dbml

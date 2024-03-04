@@ -10,7 +10,7 @@ option go_package = "github.com/lovelyoyrmia/ecommerce/domain/pb";
 
 option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
     info: {
-        title: "Ecommerce Auth API";
+        title: "Ecommerce API";
         version: "1.0";
         contact: {
             name: "Lovelyo";

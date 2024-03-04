@@ -1,0 +1,72 @@
+Project Ecommerce {
+    database_type: 'PostgreSql'
+    Note: '''
+    # Ecommerce Database
+    '''
+}
+
+
+Table users as U {
+  id int [primary key, increment]
+  uid varchar [unique, not null]
+  email varchar [unique, not null]
+  first_name varchar [not null]
+  last_name varchar
+  password varchar [not null]
+  date_joined timestamp [default: 'now()']
+
+  indexes {
+    email
+    uid
+  }
+}
+
+Table products as P {
+  id int [primary key, increment]
+  pid varchar [unique, not null]
+  category int
+  name varchar [not null]
+  description varchar
+  stock int [not null]
+  price int [not null]
+
+  indexes {
+    name
+    pid
+  }
+}
+
+Table product_categories as PC {
+  id int [primary key, increment]
+  name varchar [not null]
+}
+
+Table orders as O {
+  id int [primary key, increment]
+  oid varchar [unique, not null]
+  uid varchar [unique, not null]
+  total_amount int [not null]
+  order_status int [not null, default: 0]
+  ordered_at timestamp [default: 'now()']
+
+  indexes {
+    uid
+  }
+}
+
+Table order_items as OI {
+  id int [primary key, increment]
+  oid varchar [unique, not null]
+  pid varchar [unique, not null]
+  quantity int [not null]
+  amount int [not null]
+
+  indexes {
+    oid
+  }
+}
+
+Ref: O.uid > U.uid
+Ref: O.oid < OI.oid
+Ref: P.pid < OI.pid
+Ref: PC.id < P.category
