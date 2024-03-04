@@ -116,7 +116,7 @@
         },
         "parameters": [
           {
-            "name": "uid",
+            "name": "oid",
             "in": "query",
             "required": false,
             "type": "string"
@@ -189,6 +189,38 @@
             "name": "pid",
             "in": "query",
             "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "OrderService"
+        ]
+      }
+    },
+    "/api/v1/orders/{oid}/checkout": {
+      "get": {
+        "summary": "Checkout Order",
+        "description": "Use this API to checkout order",
+        "operationId": "OrderService_CheckoutOrder",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbCheckoutResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "oid",
+            "in": "path",
+            "required": true,
             "type": "string"
           }
         ],
@@ -307,6 +339,17 @@
         "amount": {
           "type": "string",
           "format": "int64"
+        }
+      }
+    },
+    "pbCheckoutResponse": {
+      "type": "object",
+      "properties": {
+        "oid": {
+          "type": "string"
+        },
+        "orderStatus": {
+          "type": "string"
         }
       }
     },

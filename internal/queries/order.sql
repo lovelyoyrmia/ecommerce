@@ -55,6 +55,14 @@ SET
     amount = $2
 WHERE oid = $3 AND pid = $4;
 
+-- name: UpdateOrdersStatus :one
+UPDATE orders
+SET
+    order_status = $1,
+    ordered_at = 'now()'
+WHERE oid = $2
+RETURNING *;
+
 -- name: GetOrderDetails :one
 SELECT 
     oid, uid, total_amount, ordered_at

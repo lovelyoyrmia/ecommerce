@@ -39,4 +39,14 @@ service OrderService {
             summary: "Delete Cart Products"
         };
     };
+
+    rpc CheckoutOrder (GetCartUserParams) returns (CheckoutResponse) {
+        option (google.api.http) = {
+            get: "/api/v1/orders/{oid}/checkout"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            description: "Use this API to checkout order"
+            summary: "Checkout Order"
+        };
+    };
 }

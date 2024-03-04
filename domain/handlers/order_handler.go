@@ -110,7 +110,36 @@ func (handler *OrderGRPCHandlers) DeleteCartProduct(ctx context.Context, req *pb
 		return nil, status.Error(codes.NotFound, "product not found")
 	}
 
+	if err != nil {
+		return nil, status.Error(codes.Aborted, err.Error())
+	}
+
 	return &pb.DeleteCartProductResponse{
 		Message: "Successfully delete product",
+	}, nil
+}
+
+func (handler *OrderGRPCHandlers) CheckoutOrder(ctx context.Context, req *pb.GetCartUserParams) (*pb.CheckoutResponse, error) {
+	user, err := handler.middleware.AuthorizeUser(ctx)
+	if err != nil {
+		return nil, status.Error(codes.Unauthenticated, "not authenticated")
+	}
+
+	order, err := handler.service.CheckoutOrder(ctx, models.CartProductParams{
+		Oid: req.GetOid(),
+		Uid: user.Uid,
+	})
+
+	if errors.Is(err, db.ErrRecordNotFound) {
+		return nil, status.Error(codes.NotFound, "order not found")
+	}
+
+	if err != nil {
+		return nil, status.Error(codes.Aborted, err.Error())
+	}
+
+	return &pb.CheckoutResponse{
+		Oid:         order.Oid,
+		OrderStatus: order.OrderStatus,
 	}, nil
 }

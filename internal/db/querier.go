@@ -30,6 +30,7 @@ type Querier interface {
 	GetUser(ctx context.Context, email string) (GetUserRow, error)
 	UpdateCart(ctx context.Context, arg UpdateCartParams) error
 	UpdateCartProductDetail(ctx context.Context, arg UpdateCartProductDetailParams) error
+	UpdateOrdersStatus(ctx context.Context, arg UpdateOrdersStatusParams) (Order, error)
 }
 
 var _ Querier = (*Queries)(nil)
