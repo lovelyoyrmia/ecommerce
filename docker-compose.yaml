@@ -11,6 +11,7 @@ services:
     volumes:
       - data-volume:/var/lib/postgresql/data
   api:
+    image: ecommerce-api:latest
     build: 
       context: .
       dockerfile: Dockerfile
