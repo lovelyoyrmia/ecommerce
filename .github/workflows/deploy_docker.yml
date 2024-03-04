@@ -18,7 +18,7 @@ jobs:
       run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
 
     - name: Build Docker Image
-      run: docker compose docker-compose.yaml build
+      run: docker compose -f docker-compose.yaml build
     
     - name: Push to Dockerhub
       run: docker push lovelyoyrmia/ecommerce-api:latest
