@@ -112,6 +112,7 @@ make sqlc
  dev.env : for development
  .env    : for mapping env
  ```
+ - Run Server
  ```
  make server
  ```
