@@ -24,22 +24,38 @@ func NewProductGRPCHandlers(service services.ProductServices) *ProductGRPCHandle
 }
 
 func (handler *ProductGRPCHandlers) GetProducts(ctx context.Context, productsParams *pb.GetProductParams) (*pb.GetProductResponse, error) {
-	products, err := handler.service.GetProducts(ctx, models.ProductsParams{
-		Limit:  int32(productsParams.Limit),
-		Offset: int32(productsParams.Offset),
-	})
-	if err != nil {
-		return nil, status.Error(codes.Aborted, err.Error())
+
+	var products []models.Product
+	if productsParams.Category != nil {
+		newProducts, err := handler.service.GetProductsByCategory(ctx, productsParams.GetCategory())
+		if errors.Is(err, db.ErrRecordNotFound) {
+			return nil, status.Error(codes.NotFound, "category not found")
+		}
+
+		if err != nil {
+			return nil, status.Error(codes.Aborted, err.Error())
+		}
+
+		products = newProducts.Products
+	} else {
+		newProducts, err := handler.service.GetProducts(ctx, models.ProductsParams{
+			Limit:  productsParams.Limit,
+			Offset: productsParams.Offset,
+		})
+		if err != nil {
+			return nil, status.Error(codes.Aborted, err.Error())
+		}
+		products = newProducts.Products
 	}
 
 	var productsRes []*pb.Product
 
-	for _, v := range products.Products {
+	for _, v := range products {
 		productsRes = append(productsRes, &pb.Product{
 			Pid:         v.Pid,
 			Name:        v.Name,
-			Description: v.Description.String,
-			Category:    v.CategoryName.String,
+			Description: v.Description,
+			Category:    v.Category,
 			Stock:       int64(v.Stock),
 			Price:       int64(v.Price),
 		})

@@ -22,8 +22,10 @@ type Querier interface {
 	GetCountProducts(ctx context.Context) (int64, error)
 	GetOrderDetails(ctx context.Context, oid string) (GetOrderDetailsRow, error)
 	GetOrderItems(ctx context.Context, arg GetOrderItemsParams) ([]GetOrderItemsRow, error)
+	GetProductCategory(ctx context.Context, name string) (string, error)
 	GetProductDetails(ctx context.Context, pid string) (GetProductDetailsRow, error)
 	GetProducts(ctx context.Context, arg GetProductsParams) ([]GetProductsRow, error)
+	GetProductsByCategory(ctx context.Context, name string) ([]GetProductsByCategoryRow, error)
 	GetUser(ctx context.Context, email string) (GetUserRow, error)
 	UpdateCart(ctx context.Context, arg UpdateCartParams) error
 }

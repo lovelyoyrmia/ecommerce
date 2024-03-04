@@ -1,8 +1,5 @@
 package models
 
-import "github.com/lovelyoyrmia/ecommerce/internal/db"
-
-
 type Product struct {
 	Pid         string `json:"pid"`
 	Name        string `json:"name"`
@@ -13,8 +10,9 @@ type Product struct {
 }
 
 type ProductsParams struct {
-	Limit  int32
-	Offset int32
+	Limit    *int32
+	Offset   *int32
+	Category *string
 }
 
 type ProductDetailsParams struct {
@@ -22,5 +20,5 @@ type ProductDetailsParams struct {
 }
 
 type ProductsResponse struct {
-	Products []db.GetProductsRow `json:"products"`
+	Products []Product `json:"products"`
 }

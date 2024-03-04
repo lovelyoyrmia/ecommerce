@@ -66,6 +66,19 @@ func (q *Queries) GetCountProducts(ctx context.Context) (int64, error) {
 	return count_product, err
 }
 
+const getProductCategory = `-- name: GetProductCategory :one
+SELECT name
+FROM product_categories
+WHERE name = $1
+LIMIT 1
+`
+
+func (q *Queries) GetProductCategory(ctx context.Context, name string) (string, error) {
+	row := q.db.QueryRow(ctx, getProductCategory, name)
+	err := row.Scan(&name)
+	return name, err
+}
+
 const getProductDetails = `-- name: GetProductDetails :one
 SELECT
     products.pid, products.name, products.description,
@@ -135,6 +148,53 @@ func (q *Queries) GetProducts(ctx context.Context, arg GetProductsParams) ([]Get
 	items := []GetProductsRow{}
 	for rows.Next() {
 		var i GetProductsRow
+		if err := rows.Scan(
+			&i.Pid,
+			&i.Name,
+			&i.Description,
+			&i.CategoryName,
+			&i.Stock,
+			&i.Price,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getProductsByCategory = `-- name: GetProductsByCategory :many
+SELECT
+    products.pid, products.name, products.description,
+    product_categories.name as category_name, products.stock,
+    products.price
+FROM products
+LEFT JOIN product_categories
+ON products.category = product_categories.id
+WHERE product_categories.name = $1
+`
+
+type GetProductsByCategoryRow struct {
+	Pid          string      `json:"pid"`
+	Name         string      `json:"name"`
+	Description  pgtype.Text `json:"description"`
+	CategoryName pgtype.Text `json:"category_name"`
+	Stock        int32       `json:"stock"`
+	Price        int32       `json:"price"`
+}
+
+func (q *Queries) GetProductsByCategory(ctx context.Context, name string) ([]GetProductsByCategoryRow, error) {
+	rows, err := q.db.Query(ctx, getProductsByCategory, name)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []GetProductsByCategoryRow{}
+	for rows.Next() {
+		var i GetProductsByCategoryRow
 		if err := rows.Scan(
 			&i.Pid,
 			&i.Name,
