@@ -20,5 +20,8 @@ jobs:
     - name: Build Docker Image
       run: docker compose -f docker-compose.yaml build
     
+    - name: Added New Tag
+      run: docker tag ecommerce-api:latest lovelyoyrmia/ecommerce-api:latest
+
     - name: Push to Dockerhub
       run: docker push lovelyoyrmia/ecommerce-api:latest
