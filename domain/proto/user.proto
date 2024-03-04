@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package pb;
+
+option go_package = "github.com/lovelyoyrmia/ecommerce/domain/pb";
+
+message CreateUserParams {
+    string email = 1;
+    string first_name = 2;
+    string last_name = 3;
+    string password = 4; 
+}
+
+message CreateUserResponse {
+    string uid = 1;
+    string email = 2;
+    string first_name = 3;
+    string last_name = 4;
+}
+
+message LoginUserParams {
+    string email = 1;
+    string password = 2;
+}
+
+message LoginUserResponse {
+    string token = 1;
+    string email = 2;
+}

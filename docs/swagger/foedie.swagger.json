@@ -1,0 +1,479 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Ecommerce Auth API",
+    "version": "1.0",
+    "contact": {
+      "name": "Lovelyo",
+      "url": "https://lovelyoyrmia.com",
+      "email": "lovelyoyrmia@gmail.com"
+    }
+  },
+  "tags": [
+    {
+      "name": "ProductService"
+    },
+    {
+      "name": "OrderService"
+    },
+    {
+      "name": "UserService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api/v1/auth/login": {
+      "post": {
+        "summary": "Login User",
+        "description": "Use this API to login user and get access token \u0026 refresh token",
+        "operationId": "UserService_LoginUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbLoginUserResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbLoginUserParams"
+            }
+          }
+        ],
+        "tags": [
+          "UserService"
+        ]
+      }
+    },
+    "/api/v1/auth/register": {
+      "post": {
+        "summary": "Register User",
+        "description": "Use this API to register a new user",
+        "operationId": "UserService_CreateUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbCreateUserResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbCreateUserParams"
+            }
+          }
+        ],
+        "tags": [
+          "UserService"
+        ]
+      }
+    },
+    "/api/v1/carts": {
+      "get": {
+        "summary": "Get Cart Products",
+        "description": "Use this API to get products in cart",
+        "operationId": "OrderService_GetCarts",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbGetCartUserResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "uid",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "OrderService"
+        ]
+      },
+      "post": {
+        "summary": "Add Cart",
+        "description": "Use this API to add products to cart",
+        "operationId": "OrderService_AddCart",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbCreateCartResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbCreateCartParams"
+            }
+          }
+        ],
+        "tags": [
+          "OrderService"
+        ]
+      }
+    },
+    "/api/v1/carts/{oid}": {
+      "delete": {
+        "summary": "Delete Cart Products",
+        "description": "Use this API to delete products in cart",
+        "operationId": "OrderService_DeleteCartProduct",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbDeleteCartProductResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "oid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "pid",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "OrderService"
+        ]
+      }
+    },
+    "/api/v1/products": {
+      "get": {
+        "summary": "Get Products",
+        "description": "Use this API to get list of products",
+        "operationId": "ProductService_GetProducts",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbGetProductResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "ProductService"
+        ]
+      }
+    },
+    "/api/v1/products/{pid}": {
+      "get": {
+        "summary": "Get Product Details",
+        "description": "Use this API to get product details",
+        "operationId": "ProductService_GetProductDetails",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbProduct"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "ProductService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "pbCartProduct": {
+      "type": "object",
+      "properties": {
+        "pid": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "stock": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "price": {
+          "type": "string",
+          "format": "int64"
+        },
+        "category": {
+          "type": "string"
+        },
+        "quantity": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "amount": {
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "pbCreateCartParams": {
+      "type": "object",
+      "properties": {
+        "pid": {
+          "type": "string"
+        },
+        "uid": {
+          "type": "string"
+        },
+        "quantity": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "amount": {
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "pbCreateCartResponse": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "pbCreateUserParams": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    "pbCreateUserResponse": {
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        }
+      }
+    },
+    "pbDeleteCartProductResponse": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "pbGetCartUserResponse": {
+      "type": "object",
+      "properties": {
+        "oid": {
+          "type": "string"
+        },
+        "products": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbCartProduct"
+          }
+        }
+      }
+    },
+    "pbGetProductResponse": {
+      "type": "object",
+      "properties": {
+        "products": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbProduct"
+          }
+        }
+      }
+    },
+    "pbLoginUserParams": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    "pbLoginUserResponse": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        }
+      }
+    },
+    "pbProduct": {
+      "type": "object",
+      "properties": {
+        "pid": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "stock": {
+          "type": "string",
+          "format": "int64"
+        },
+        "price": {
+          "type": "string",
+          "format": "int64"
+        },
+        "category": {
+          "type": "string"
+        }
+      }
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  }
+}

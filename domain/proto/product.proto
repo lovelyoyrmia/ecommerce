@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package pb;
+
+option go_package = "github.com/lovelyoyrmia/ecommerce/domain/pb";
+
+message Product {
+    string pid = 1;
+    string name = 2;
+    string description = 3;
+    int64 stock = 4;
+    int64 price = 5;
+    string category = 6;
+}
+
+message GetProductResponse {
+    repeated Product products = 1;
+}
+
+message GetProductDetailsParams {
+    string pid = 1;
+}
+
+message GetProductParams {
+    int64 limit = 1;
+    int64 offset = 2;
+}

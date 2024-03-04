@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package pb;
+
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "google/api/annotations.proto";
+import "product.proto";
+
+option go_package = "github.com/lovelyoyrmia/ecommerce/domain/pb";
+
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+    info: {
+        title: "Ecommerce Auth API";
+        version: "1.0";
+        contact: {
+            name: "Lovelyo";
+            url: "https://lovelyoyrmia.com";
+            email: "lovelyoyrmia@gmail.com"
+        };
+    };
+};
+
+service ProductService {
+    rpc GetProducts (GetProductParams) returns (GetProductResponse) {
+        option (google.api.http) = {
+            get: "/api/v1/products"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            description: "Use this API to get list of products"
+            summary: "Get Products"
+        };
+    };
+    rpc GetProductDetails (GetProductDetailsParams) returns (Product) {
+        option (google.api.http) = {
+            get: "/api/v1/products/{pid}"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            description: "Use this API to get product details"
+            summary: "Get Product Details"
+        };
+    };
+}

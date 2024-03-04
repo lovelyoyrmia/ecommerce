@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+package pb;
+
+option go_package = "github.com/lovelyoyrmia/ecommerce/domain/pb";
+
+message CartProduct {
+    string pid = 1;
+    string name = 2;
+    string description = 3;
+    int32 stock = 4;
+    int64 price = 5;
+    string category = 6;
+    int32 quantity = 7;
+    int64 amount = 8;
+}
+
+message CreateCartParams {
+    string pid = 1;
+    string uid = 2;
+    int32 quantity = 3;
+    int64 amount = 4;
+}
+
+message CreateCartResponse {
+    string message = 1;
+}
+
+message GetCartUserParams {
+    string uid = 1;
+}
+
+message GetCartUserResponse {
+    string oid = 1;
+    repeated CartProduct products = 2;
+}
+
+message DeleteCartProductParams {
+    string oid = 1;
+    string pid = 2;
+}
+
+message DeleteCartProductResponse {
+    string message = 1;
+}

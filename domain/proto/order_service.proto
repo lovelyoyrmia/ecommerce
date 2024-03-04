@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package pb;
+
+import "order.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "google/api/annotations.proto";
+
+option go_package = "github.com/lovelyoyrmia/ecommerce/domain/pb";
+
+service OrderService {
+    rpc AddCart (CreateCartParams) returns (CreateCartResponse) {
+        option (google.api.http) = {
+            post: "/api/v1/carts"
+            body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            description: "Use this API to add products to cart"
+            summary: "Add Cart"
+        };
+    };
+
+    rpc GetCarts (GetCartUserParams) returns (GetCartUserResponse) {
+        option (google.api.http) = {
+            get: "/api/v1/carts"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            description: "Use this API to get products in cart"
+            summary: "Get Cart Products"
+        };
+    };
+
+    rpc DeleteCartProduct (DeleteCartProductParams) returns (DeleteCartProductResponse) {
+        option (google.api.http) = {
+            delete: "/api/v1/carts/{oid}"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            description: "Use this API to delete products in cart"
+            summary: "Delete Cart Products"
+        };
+    };
+}
