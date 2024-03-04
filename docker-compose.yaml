@@ -1,0 +1,26 @@
+version: '3.9'
+services:
+  postgres:
+    image: postgres:12-alpine
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=ecommerce
+    ports:
+      - "5431:5432"
+    volumes:
+      - data-volume:/var/lib/postgresql/data
+  api:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "50052:50052"
+    environment:
+      - DB_URL=postgresql://root:root@postgres:5432/ecommerce?sslmode=disable
+    depends_on:
+      - postgres
+    entrypoint: ["/app/wait-for.sh", "postgres:5432"]
+
+volumes:
+  data-volume:
