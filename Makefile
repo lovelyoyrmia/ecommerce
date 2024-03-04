@@ -1,11 +1,14 @@
-DB_URL=postgresql://root:root@localhost:5432/ecommerce?sslmode=disable
+DB_URL=postgresql://root:root@postgres12:5432/ecommerce?sslmode=disable
 
 
 postgres:
-	docker run --name postgres12 -p 5432:5432 -e POSTGRES_PASSWORD=root -e POSTGRES_USER=root -d postgres:12-alpine
+	docker run --name postgres12 --network ecommerce-network -p 5432:5432 -e POSTGRES_PASSWORD=root -e POSTGRES_USER=root -d postgres:12-alpine
 
 server:
 	go run cmd/main.go
+
+dockerbuild:
+	docker build -t ecommerce:latest .
 
 seed:
 	go run seeds/seed.go
