@@ -104,15 +104,31 @@ make migratedown
 ```
 make sqlc
 ```
- 
- ### How To Run
- - Create Environment
- ```
- app.env : for production
- dev.env : for development
- .env    : for mapping env
- ```
- - Run Server
- ```
- make server
- ```
+
+- Generate Schema Database From DBML
+```
+make dbschema
+```
+
+- Generate Proto File to Golang Code
+```
+make proto
+```
+
+### Documentation
+- Generate DB Docs
+```
+make dbdocs
+```
+
+### How To Run
+- Create Environment
+```
+app.env : for production
+dev.env : for development
+.env    : for mapping env
+```
+- Run Server
+```
+make server
+```
