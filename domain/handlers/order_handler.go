@@ -39,6 +39,10 @@ func (handler *OrderGRPCHandlers) AddCart(ctx context.Context, req *pb.CreateCar
 		Amount:   int32(req.GetAmount()),
 	})
 
+	if errors.Is(err, db.ErrOutOfStock) {
+		return nil, status.Error(codes.OutOfRange, "out of stock")
+	}
+
 	if db.ErrorCode(err) == db.UniqueViolation {
 		return nil, status.Error(codes.AlreadyExists, "product already exists")
 	}
@@ -87,5 +91,26 @@ func (handler *OrderGRPCHandlers) GetCarts(ctx context.Context, req *pb.GetCartU
 	return &pb.GetCartUserResponse{
 		Oid:      carts.Oid,
 		Products: productsRes,
+	}, nil
+}
+
+func (handler *OrderGRPCHandlers) DeleteCartProduct(ctx context.Context, req *pb.DeleteCartProductParams) (*pb.DeleteCartProductResponse, error) {
+	user, err := handler.middleware.AuthorizeUser(ctx)
+	if err != nil {
+		return nil, status.Error(codes.Unauthenticated, "not authenticated")
+	}
+
+	err = handler.service.DeleteCartProduct(ctx, models.CartProductParams{
+		Uid: user.Uid,
+		Pid: req.Pid,
+		Oid: req.GetOid(),
+	})
+
+	if errors.Is(err, db.ErrRecordNotFound) {
+		return nil, status.Error(codes.NotFound, "product not found")
+	}
+
+	return &pb.DeleteCartProductResponse{
+		Message: "Successfully delete product",
 	}, nil
 }

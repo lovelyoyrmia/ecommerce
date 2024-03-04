@@ -14,13 +14,14 @@ type Querier interface {
 	CreateProduct(ctx context.Context, arg CreateProductParams) (Product, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
 	DeleteOrder(ctx context.Context) error
-	DeleteOrderItemByProduct(ctx context.Context, pid string) error
+	DeleteOrderItemByProduct(ctx context.Context, arg DeleteOrderItemByProductParams) error
 	DeleteOrderItems(ctx context.Context, arg DeleteOrderItemsParams) error
 	GetCart(ctx context.Context, arg GetCartParams) ([]GetCartRow, error)
+	GetCartProductDetail(ctx context.Context, arg GetCartProductDetailParams) (GetCartProductDetailRow, error)
 	GetCartProducts(ctx context.Context, oid string) ([]GetCartProductsRow, error)
 	GetCartUser(ctx context.Context, uid string) (GetCartUserRow, error)
 	GetCountProducts(ctx context.Context) (int64, error)
-	GetOrderDetails(ctx context.Context, oid string) (GetOrderDetailsRow, error)
+	GetOrderDetails(ctx context.Context, arg GetOrderDetailsParams) (GetOrderDetailsRow, error)
 	GetOrderItems(ctx context.Context, arg GetOrderItemsParams) ([]GetOrderItemsRow, error)
 	GetProductCategory(ctx context.Context, name string) (string, error)
 	GetProductDetails(ctx context.Context, pid string) (GetProductDetailsRow, error)
@@ -28,6 +29,7 @@ type Querier interface {
 	GetProductsByCategory(ctx context.Context, name string) ([]GetProductsByCategoryRow, error)
 	GetUser(ctx context.Context, email string) (GetUserRow, error)
 	UpdateCart(ctx context.Context, arg UpdateCartParams) error
+	UpdateCartProductDetail(ctx context.Context, arg UpdateCartProductDetailParams) error
 }
 
 var _ Querier = (*Queries)(nil)
