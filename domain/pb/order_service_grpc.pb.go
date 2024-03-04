@@ -22,6 +22,7 @@ const (
 	OrderService_AddCart_FullMethodName           = "/pb.OrderService/AddCart"
 	OrderService_GetCarts_FullMethodName          = "/pb.OrderService/GetCarts"
 	OrderService_DeleteCartProduct_FullMethodName = "/pb.OrderService/DeleteCartProduct"
+	OrderService_CheckoutOrder_FullMethodName     = "/pb.OrderService/CheckoutOrder"
 )
 
 // OrderServiceClient is the client API for OrderService service.
@@ -31,6 +32,7 @@ type OrderServiceClient interface {
 	AddCart(ctx context.Context, in *CreateCartParams, opts ...grpc.CallOption) (*CreateCartResponse, error)
 	GetCarts(ctx context.Context, in *GetCartUserParams, opts ...grpc.CallOption) (*GetCartUserResponse, error)
 	DeleteCartProduct(ctx context.Context, in *DeleteCartProductParams, opts ...grpc.CallOption) (*DeleteCartProductResponse, error)
+	CheckoutOrder(ctx context.Context, in *GetCartUserParams, opts ...grpc.CallOption) (*CheckoutResponse, error)
 }
 
 type orderServiceClient struct {
@@ -68,6 +70,15 @@ func (c *orderServiceClient) DeleteCartProduct(ctx context.Context, in *DeleteCa
 	return out, nil
 }
 
+func (c *orderServiceClient) CheckoutOrder(ctx context.Context, in *GetCartUserParams, opts ...grpc.CallOption) (*CheckoutResponse, error) {
+	out := new(CheckoutResponse)
+	err := c.cc.Invoke(ctx, OrderService_CheckoutOrder_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // OrderServiceServer is the server API for OrderService service.
 // All implementations must embed UnimplementedOrderServiceServer
 // for forward compatibility
@@ -75,6 +86,7 @@ type OrderServiceServer interface {
 	AddCart(context.Context, *CreateCartParams) (*CreateCartResponse, error)
 	GetCarts(context.Context, *GetCartUserParams) (*GetCartUserResponse, error)
 	DeleteCartProduct(context.Context, *DeleteCartProductParams) (*DeleteCartProductResponse, error)
+	CheckoutOrder(context.Context, *GetCartUserParams) (*CheckoutResponse, error)
 	mustEmbedUnimplementedOrderServiceServer()
 }
 
@@ -90,6 +102,9 @@ func (UnimplementedOrderServiceServer) GetCarts(context.Context, *GetCartUserPar
 }
 func (UnimplementedOrderServiceServer) DeleteCartProduct(context.Context, *DeleteCartProductParams) (*DeleteCartProductResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteCartProduct not implemented")
+}
+func (UnimplementedOrderServiceServer) CheckoutOrder(context.Context, *GetCartUserParams) (*CheckoutResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CheckoutOrder not implemented")
 }
 func (UnimplementedOrderServiceServer) mustEmbedUnimplementedOrderServiceServer() {}
 
@@ -158,6 +173,24 @@ func _OrderService_DeleteCartProduct_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _OrderService_CheckoutOrder_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetCartUserParams)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OrderServiceServer).CheckoutOrder(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: OrderService_CheckoutOrder_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OrderServiceServer).CheckoutOrder(ctx, req.(*GetCartUserParams))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // OrderService_ServiceDesc is the grpc.ServiceDesc for OrderService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -176,6 +209,10 @@ var OrderService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteCartProduct",
 			Handler:    _OrderService_DeleteCartProduct_Handler,
+		},
+		{
+			MethodName: "CheckoutOrder",
+			Handler:    _OrderService_CheckoutOrder_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

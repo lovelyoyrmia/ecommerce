@@ -32,3 +32,30 @@ type CartProducts struct {
 	Oid      string
 	Products []CartProduct
 }
+
+type Orders struct {
+	Oid         string `json:"oid"`
+	OrderStatus string `json:"order_status"`
+	OrderedAt   string `json:"ordered_at"`
+}
+
+func (o *Orders) ExtractOrderStatus(orderStatus int32) Orders {
+	var order string
+	switch orderStatus {
+	case 1:
+		order = "pending"
+	case 2:
+		order = "processed"
+	case 3:
+		order = "completed"
+	case 4:
+		order = "canceled"
+	default:
+		order = "added"
+	}
+	return Orders{
+		Oid:         o.Oid,
+		OrderStatus: order,
+		OrderedAt:   o.OrderedAt,
+	}
+}

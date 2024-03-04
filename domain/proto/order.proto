@@ -15,6 +15,11 @@ message CartProduct {
     int64 amount = 8;
 }
 
+message CheckoutResponse {
+    string oid = 1;
+    string order_status = 2;
+}
+
 message CreateCartParams {
     string pid = 1;
     string uid = 2;
@@ -27,7 +32,7 @@ message CreateCartResponse {
 }
 
 message GetCartUserParams {
-    string uid = 1;
+    string oid = 1;
 }
 
 message GetCartUserResponse {

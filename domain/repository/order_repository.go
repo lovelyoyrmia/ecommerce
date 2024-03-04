@@ -11,6 +11,7 @@ type OrderRepositories interface {
 	AddCart(ctx context.Context, createCartParams db.CreateCartTx) error
 	GetCartProducts(ctx context.Context, req models.CartsParams) (models.CartProducts, error)
 	DeleteCartProduct(ctx context.Context, req models.CartProductParams) error
+	CheckoutOrder(ctx context.Context, req models.CartProductParams) (db.Order, error)
 }
 
 type orderRepo struct {
@@ -83,5 +84,18 @@ func (repo *orderRepo) DeleteCartProduct(ctx context.Context, req models.CartPro
 	return repo.store.DeleteOrderItemByProduct(ctx, db.DeleteOrderItemByProductParams{
 		Oid: order.Oid,
 		Pid: product.Pid,
+	})
+}
+
+// CheckoutOrder implements OrderRepositories.
+func (repo *orderRepo) CheckoutOrder(ctx context.Context, req models.CartProductParams) (db.Order, error) {
+	order, err := repo.store.GetCartUser(ctx, req.Uid)
+	if err != nil {
+		return db.Order{}, err
+	}
+
+	return repo.store.UpdateOrdersStatus(ctx, db.UpdateOrdersStatusParams{
+		OrderStatus: 1,
+		Oid:         order.Oid,
 	})
 }

@@ -12,6 +12,7 @@ type OrderServices interface {
 	AddCart(ctx context.Context, req models.CartParams) error
 	GetCartProducts(ctx context.Context, req models.CartsParams) (models.CartProducts, error)
 	DeleteCartProduct(ctx context.Context, req models.CartProductParams) error
+	CheckoutOrder(ctx context.Context, req models.CartProductParams) (models.Orders, error)
 }
 
 type orderService struct {
@@ -33,6 +34,20 @@ func (service *orderService) AddCart(ctx context.Context, req models.CartParams)
 		Quantity: req.Quantity,
 	}
 	return service.repo.AddCart(ctx, createCartParams)
+}
+
+// CheckoutOrder implements OrderServices.
+func (service *orderService) CheckoutOrder(ctx context.Context, req models.CartProductParams) (models.Orders, error) {
+	order, err := service.repo.CheckoutOrder(ctx, req)
+	if err != nil {
+		return models.Orders{}, err
+	}
+	orderRes := models.Orders{
+		Oid:       order.Oid,
+		OrderedAt: order.OrderedAt.Time.String(),
+	}
+	newOrder := orderRes.ExtractOrderStatus(order.OrderStatus)
+	return newOrder, nil
 }
 
 // GetCartProducts implements OrderServices.
