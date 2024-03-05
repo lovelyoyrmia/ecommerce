@@ -1,0 +1,20 @@
+name: Pull Docker Image
+
+on:
+  workflow_run:
+    workflows: ["Push Docker Image"]
+    types:
+      - completed
+
+
+jobs:
+  build:
+    runs-on: self-hosted
+
+    steps:
+    - name: Pull Docker Image
+      run: docker pull lovelyoyrmia/ecommerce-api:latest
+
+    - name: Run Docker Container
+      run: docker run -d -p 50052:50052 --name lovelyoyrmia/ecommerce-api
+    
