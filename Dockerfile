@@ -10,6 +10,7 @@ WORKDIR /app
 COPY --from=builder /app/main .
 COPY wait-for.sh .
 COPY app.env .
+COPY docs ./docs
 COPY migrations ./migrations
 
 EXPOSE 50052
