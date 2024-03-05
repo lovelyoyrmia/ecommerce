@@ -1,11 +1,11 @@
-name: Pull Docker Image
+name: Deploy
 
 on:
   workflow_run:
-    workflows: ["Push Docker Image"]
+    workflows:
+      - Docker
     types:
       - completed
-
 
 jobs:
   build:

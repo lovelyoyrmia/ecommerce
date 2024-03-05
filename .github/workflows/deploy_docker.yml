@@ -1,9 +1,8 @@
-name: Push Docker Image
+name: Docker
 
 on:
   push:
     branches: [ "release" ]
-
 
 jobs:
   build:
