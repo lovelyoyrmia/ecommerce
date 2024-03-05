@@ -33,24 +33,30 @@ var interruptSignal = []os.Signal{
 }
 
 func main() {
+	// Load configuration
 	c, err := config.LoadConfig()
 	if err != nil {
 		log.Fatal().Msgf("error occurred : %v", err)
 	}
 
+	// Add interrupt signal
 	ctx, stop := signal.NotifyContext(context.Background(), interruptSignal...)
 	defer stop()
 
+	// Initialize Database
 	database := db.NewDatabase(ctx, c)
 	store := db.NewStore(database.DB)
 
+	// Initialize token
 	maker, err := token.NewPasetoMaker(c)
 	if err != nil {
 		log.Fatal().Msgf("error occurred : %v", err)
 	}
 
+	// Register wait group
 	waitGroup, ctx := errgroup.WithContext(ctx)
 
+	// Run Server
 	runHTTPGatewayServer(waitGroup, ctx, c, store, maker)
 
 	err = waitGroup.Wait()
@@ -67,6 +73,7 @@ func runHTTPGatewayServer(
 	maker token.Maker,
 ) {
 
+	// Declare json option for grpc request and response
 	jsonOpt := runtime.WithMarshalerOption(runtime.MIMEWildcard, &runtime.JSONPb{
 		MarshalOptions: protojson.MarshalOptions{
 			UseProtoNames: true,
@@ -76,8 +83,10 @@ func runHTTPGatewayServer(
 		},
 	})
 
+	// Create grpc serve mux
 	grpcMux := runtime.NewServeMux(jsonOpt)
 
+	// Register user services
 	userRepo := repository.NewUserRepository(store)
 	userService := services.NewUserService(userRepo, maker)
 	userGrpc := handlers.NewUserGRPCHandlers(userService)
@@ -87,6 +96,7 @@ func runHTTPGatewayServer(
 		log.Fatal().Msgf("error occured : %v", err)
 	}
 
+	// Register products services
 	productRepo := repository.NewProductRepository(store)
 	productService := services.NewProductService(productRepo)
 	productGrpc := handlers.NewProductGRPCHandlers(productService)
@@ -96,10 +106,13 @@ func runHTTPGatewayServer(
 		log.Fatal().Msgf("error occured : %v", err)
 	}
 
+	// Declare middlewares for grpc
 	middle := middlewares.NewMiddlewares(config, maker, store)
 
+	// Register orders services
 	orderRepo := repository.NewOrderRepository(store)
 	orderService := services.NewOrderService(orderRepo)
+	// Inject middlewares to order services
 	orderGrpc := handlers.NewOrderGRPCHandlers(orderService, middle)
 
 	err = pb.RegisterOrderServiceHandlerServer(ctx, grpcMux, orderGrpc)
@@ -107,16 +120,20 @@ func runHTTPGatewayServer(
 		log.Fatal().Msgf("error occured : %v", err)
 	}
 
+	// Create http serve mux
 	mux := http.NewServeMux()
 	mux.Handle("/", grpcMux)
 
+	// Register middleware Redoc for API Spec
 	ops := middleware.RedocOpts{SpecURL: fmt.Sprintf("%s%s", "./docs/swagger", "/foedie.swagger.json")}
 	sh := middleware.Redoc(ops, nil)
 	mux.Handle("/docs", sh)
 
+	// Serve API Docs
 	fs := http.FileServer(http.Dir("./docs/swagger"))
 	mux.Handle(fmt.Sprintf("/docs/swagger%s", "/foedie.swagger.json"), http.StripPrefix("/docs/swagger/", fs))
 
+	// Register http server
 	s := &http.Server{
 		Addr:         config.GatewayAddress,
 		Handler:      mux,
@@ -126,6 +143,7 @@ func runHTTPGatewayServer(
 	}
 
 	log.Info().Msgf("Starting GRPC server on port: %s", s.Addr)
+	// Create go routines to serve http
 	waitGroup.Go(func() error {
 		err := s.ListenAndServe()
 		if err != nil {
@@ -138,6 +156,7 @@ func runHTTPGatewayServer(
 		return nil
 	})
 
+	// Waiting server to gracefully shutdown
 	waitGroup.Go(func() error {
 		<-ctx.Done()
 		log.Info().Msg("graceful shutdown HTTP gateway server")
