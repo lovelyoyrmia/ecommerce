@@ -124,6 +124,13 @@
         ],
         "tags": [
           "OrderService"
+        ],
+        "security": [
+          {
+            "Bearer": [
+              "Token"
+            ]
+          }
         ]
       },
       "post": {
@@ -156,6 +163,13 @@
         ],
         "tags": [
           "OrderService"
+        ],
+        "security": [
+          {
+            "Bearer": [
+              "Token"
+            ]
+          }
         ]
       }
     },
@@ -194,6 +208,13 @@
         ],
         "tags": [
           "OrderService"
+        ],
+        "security": [
+          {
+            "Bearer": [
+              "Token"
+            ]
+          }
         ]
       }
     },
@@ -226,6 +247,13 @@
         ],
         "tags": [
           "OrderService"
+        ],
+        "security": [
+          {
+            "Bearer": [
+              "Token"
+            ]
+          }
         ]
       }
     },
@@ -523,6 +551,12 @@
           }
         }
       }
+    }
+  },
+  "securityDefinitions": {
+    "Bearer": {
+      "type": "basic",
+      "in": "header"
     }
   }
 }

@@ -18,6 +18,15 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
             email: "lovelyoyrmia@gmail.com"
         };
     };
+    security_definitions: {
+        security: {
+            key: "Bearer"
+            value: {
+                type: 1
+                in: 2
+            }
+        }
+    };
 };
 
 service ProductService {
