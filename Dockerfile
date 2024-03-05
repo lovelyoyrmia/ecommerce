@@ -10,7 +10,6 @@ WORKDIR /app
 COPY --from=builder /app/main .
 COPY wait-for.sh .
 COPY migrations ./migrations
-RUN touch ./app.env
 
 EXPOSE 50052
 CMD [ "/app/main" ]
