@@ -9,6 +9,7 @@ FROM alpine:3.19
 WORKDIR /app
 COPY --from=builder /app/main .
 COPY wait-for.sh .
+COPY app.env .
 COPY migrations ./migrations
 
 EXPOSE 50052
