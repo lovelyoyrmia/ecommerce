@@ -17,6 +17,14 @@ service OrderService {
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
             description: "Use this API to add products to cart"
             summary: "Add Cart"
+            security: {
+                security_requirement: {
+                    key: "Bearer";
+                    value: {
+                        scope: "Token";
+                    }
+                }
+            }
         };
     };
 
@@ -27,6 +35,14 @@ service OrderService {
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
             description: "Use this API to get products in cart"
             summary: "Get Cart Products"
+            security: {
+                security_requirement: {
+                    key: "Bearer";
+                    value: {
+                        scope: "Token";
+                    }
+                }
+            }
         };
     };
 
@@ -37,6 +53,14 @@ service OrderService {
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
             description: "Use this API to delete products in cart"
             summary: "Delete Cart Products"
+            security: {
+                security_requirement: {
+                    key: "Bearer";
+                    value: {
+                        scope: "Token";
+                    }
+                }
+            }
         };
     };
 
@@ -47,6 +71,14 @@ service OrderService {
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
             description: "Use this API to checkout order"
             summary: "Checkout Order"
+            security: {
+                security_requirement: {
+                    key: "Bearer";
+                    value: {
+                        scope: "Token";
+                    }
+                }
+            }
         };
     };
 }
