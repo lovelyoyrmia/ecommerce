@@ -26,6 +26,9 @@ source: https://blog.logrocket.com/guide-to-grpc-gateway/
 - <a href="https://dbdocs.io/docs">DB DOCS</a>
 - <a href="https://pkg.go.dev/github.com/golang/protobuf/protoc-gen-go">PROTOC</a>
 
+
+This system is hosted on AWS EC2 and using github actions as a CI/CD Pipeline
+
 ## ERD Docs
 <img src="./docs/images/erd.png">
 Complete ERD Docs: 
