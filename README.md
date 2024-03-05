@@ -2,6 +2,9 @@
 
 ### Module : Go Version 1.21.6
 
+### Server running on :
+<a href="http://3.27.14.107:50052">Production</a>
+
 This system is using GRPC and GRPC Gateway. The diagram below which explains how GRPC and gRPC Gateway work. 
 
 <img src="./docs/images/grpc-diagram.jpg">
@@ -15,7 +18,7 @@ source: https://blog.logrocket.com/guide-to-grpc-gateway/
 <code><img height="20" src="https://raw.githubusercontent.com/github/explore/80688e429a7d4ef2fca1e82350fe8e3517d3494d/topics/docker/docker.png"></code> &nbsp;&nbsp; 
 <code><img height="20" src="https://raw.githubusercontent.com/github/explore/80688e429a7d4ef2fca1e82350fe8e3517d3494d/topics/postgresql/postgresql.png"></code>
 &nbsp;&nbsp; 
-<code><img height="20" src="https://raw.githubusercontent.com/github/explore/80688e429a7d4ef2fca1e82350fe8e3517d3494d/topics/google/google.png"></code>
+<code><img height="20" src="https://raw.githubusercontent.com/github/explore/80688e429a7d4ef2fca1e82350fe8e3517d3494d/topics/aws/aws.png"></code>
 
 ### Other Tools:
 - <a href="https://github.com/kyleconroy/sqlc#installation">SQLC</a>
@@ -32,7 +35,7 @@ Complete ERD Docs:
 ## API Docs
 <img src="./docs/images/api.png">
 This API Docs are built with Swagger and Redocs. To Access the API Docs can see the link below :
-<a href="http://localhost:50052/docs">Link API Docs</a>
+<a href="http://3.27.14.107:50052/docs">Link API Docs</a>
 
 ### Default Error Response
 ```
@@ -56,7 +59,7 @@ There are some error codes used below:
 - Order Service (Add To Cart, Get Cart Products, Delete Cart Product, Checkout Order)
 - Product Service (Get Products, Get Products by Category, Get Product Details)
 
-#### The order services can be accessed by authenticated user.  
+#### The Order Services can be accessed by authenticated user.  
 
 Example:
 - POST /api/v1/carts
@@ -70,6 +73,22 @@ BODY : {
     "quantity": 10,
     "amount": 18286
 }
+```
+
+#### The Product Services have some query parameters.
+
+Example:
+- To get list of products by category
+
+Note that category params can be optional
+```
+GET /api/v1/products?category=Laptop
+```
+- To get list of products pagination
+
+Note that limit and offset can be optional
+```
+GET /api/v1/products?limit=10&offset=2
 ```
 
 ## Get Started
@@ -124,7 +143,7 @@ make proto
 make dbdocs
 ```
 
-### How To Run
+### How To Run In Local Development
 - Create Environment
 ```
 app.env : for production
