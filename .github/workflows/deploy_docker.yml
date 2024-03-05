@@ -35,6 +35,6 @@ jobs:
       - name: Pull Docker Image
         run: sudo docker pull lovelyoyrmia/ecommerce-api:latest
       - name: Delete Previous Container
-        run: sudo docker rm ecommerce-api
+        run: sudo docker rm -f ecommerce-api || true
       - name: Run Docker Container
         run: sudo docker run --name ecommerce-api -p 50052:50052 lovelyoyrmia/ecommerce-api:latest
