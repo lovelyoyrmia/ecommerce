@@ -6,6 +6,7 @@ on:
 
 jobs:
   build:
+    name: Push Docker Image
     runs-on: ubuntu-latest
 
     steps:
@@ -24,3 +25,16 @@ jobs:
 
     - name: Push to Dockerhub
       run: docker push lovelyoyrmia/ecommerce-api:latest
+  
+  deploy:
+    name: Deploy To Ec 2
+    needs: build
+    runs-on: self-hosted
+
+    steps:
+      - name: Pull Docker Image
+        run: sudo docker pull lovelyoyrmia/ecommerce-api:latest
+  
+      - name: Run Docker Container
+        run: sudo docker run -d -p 50052:50052 --name lovelyoyrmia/ecommerce-api
+      
